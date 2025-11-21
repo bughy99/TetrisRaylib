@@ -10,7 +10,8 @@
 #include "random"
 #include "playfield.hpp"
 
-enum PieceType {
+enum PieceType
+{
     I_PC,
     J_PC,
     L_PC,
@@ -20,26 +21,32 @@ enum PieceType {
     Z_PC
 };
 
-//queue size is 5
+// queue size is 5
 class QueueManager
 {
 public:
-    QueueManager(Playfield &p): playfield(p) {
+    QueueManager(Playfield &p) : playfield(p)
+    {
         piece_queue = GeneratePieceQueue();
         SpawnPiece(piece_queue.front());
     };
     std::queue<PieceType> GeneratePieceQueue();
     void PopPiece();
     void Update();
+    void DrawQueue();
     void SpawnPiece(PieceType p_type);
-
 private:
-    Piece* curr_piece = nullptr;
+    Piece *curr_piece = nullptr;
     std::queue<PieceType> piece_queue;
     std::queue<PieceType> next_piece_queue;
     Playfield &playfield;
 
+    // timers
     float falling_clock = 0.0;
     float falling_time_elapsed = 0.5;
+    float key_pressed_time = 0.0;
+    float touched_down_time_max = 3.0;
 
+    PieceType PickPiece();
+    bool isInQueue(std::queue<PieceType> p_queue, PieceType random_piece);
 };
