@@ -5,6 +5,8 @@
 
 
 
+
+
 std::queue<PieceType> QueueManager::GeneratePieceQueue()
 {
     std::queue<PieceType> p_queue;
@@ -105,9 +107,13 @@ void QueueManager::Update()
         {
             falling_time_elapsed = 0.5;
         }
-        if (IsKeyPressed(KEY_UP))
+        if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_X))
         {
-            curr_piece->Rotate(playfield);
+            curr_piece->Rotate(playfield, {1, -1});
+        }
+        if (IsKeyPressed(KEY_Z))
+        {
+            curr_piece->Rotate(playfield, {-1, 1});
         }
 
         //go down instantly
@@ -137,37 +143,40 @@ void QueueManager::DrawQueue()
 
     DrawText("NEXT: ", 280.0, 15, 20, BLACK);
 
-    for (int i = 0; i <= 6; i++)
+    for (int i = 0; i <= 4; i++)
     {
         Vector2 offset = Vector2{280.0, float(30.0 + box_size * i)};
         DrawRectangleV(offset, (Vector2){box_size, box_size}, col);
         DrawLine(offset.x, offset.y + box_size, offset.x + box_size,  offset.y + box_size, BLACK);
         DrawLine(offset.x + box_size, offset.y, offset.x + box_size,  offset.y + box_size, BLACK);
-        switch (temp_queue[i])
+        char letter;
+        switch (temp_queue[i+1])
         {
-        case PieceType::I_PC:
-            DrawText("I", 280.0, 40 + box_size * i, 20, BLACK);
-            break;
-        case PieceType::L_PC:
-            DrawText("L", 280.0, 40 + box_size * i, 20, BLACK);
-            break;
-        case PieceType::J_PC:
-            DrawText("J", 280.0, 40 + box_size * i, 20, BLACK);
-            break;
-        case PieceType::S_PC:
-            DrawText("S", 280.0, 40 + box_size * i, 20, BLACK);
-            break;
-        case PieceType::Z_PC:
-            DrawText("Z", 280.0, 40 + box_size * i, 20, BLACK);
-            break;
-        case PieceType::O_PC:
-            DrawText("O", 280.0, 40 + box_size * i, 20, BLACK);
-            break;
-        case PieceType::T_PC:
-            DrawText("T", 280.0, 40 + box_size * i, 20, BLACK);
-            break;
-        
+            case PieceType::I_PC:
+                letter = 'I';
+                break;
+            case PieceType::J_PC:
+                letter = 'J';
+                break;
+            case PieceType::L_PC:
+                letter = 'L';
+                break;
+            case PieceType::O_PC:
+                letter = 'O';
+                break;
+            case PieceType::S_PC:
+                letter = 'S';
+                break;
+            case PieceType::Z_PC:
+                letter = 'Z';
+                break;
+            case PieceType::T_PC:
+                letter = 'T';
+                break;
         }
+        
+        DrawText(std::string(1, letter).c_str(), offset.x, offset.y, 20, BLACK);
+        
     }
 }
 

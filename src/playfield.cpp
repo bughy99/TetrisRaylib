@@ -5,6 +5,15 @@
 void Playfield::CheckLines()
 {
 
+    for (int i = 0; i < cell_width; i++)
+    {
+        if (cells[i][0] == CellState::O)
+            {
+                game_over = true;
+                break;
+            }
+    }
+
     for (int j = 1; j < cell_height; j++)
     {
         bool is_full = true;

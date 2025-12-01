@@ -46,25 +46,42 @@ void Piece::Rotate(Playfield &playfield, Vector2 dir)
 {
     Vector2 pivot_point = GetBlock(pivot_block);
     std::array<Vector2, 4> rotates;
+    std::array<Vector2, 5> wall_kicks = {
+        Vector2{0, 0}, Vector2{-1, 0}, Vector2{1, 0}, Vector2{0, -1}, Vector2{0, 1}};
+
     for (int i = 0; i < 4; i++)
     {
         Vector2 rel = Vector2{block_coords[i].x - pivot_point.x, block_coords[i].y - pivot_point.y};
-        Vector2 rotated = {rel.y * dir.y, rel.x * dir.x}; // 90° clockwise
-        if (!IsColliding(playfield, rotated))
+        rotates[i] = Vector2{rel.y * dir.y, rel.x * dir.x}; // 90° clockwise or counterclockwise
+    }
+
+    for (const auto &kick : wall_kicks)
+    {
+        bool can_rotate = true;
+        for (int i = 0; i < 4; i++)
         {
-            rotates[i] = rotated;
+            Vector2 rotated = Vector2{pivot_point.x + rotates[i].x + kick.x, pivot_point.y + rotates[i].y + kick.y};
+            if (rotated.x < 0 ||
+                rotated.x >= cell_width ||
+                rotated.y < 0 ||
+                rotated.y >= cell_height ||
+                playfield.GetCell(rotated) == CellState::O)
+            {
+                can_rotate = false;
+                break;
+            }
         }
-        else
+
+        if (can_rotate)
         {
+            playfield.ClearMoving();
+            for (int i = 0; i < 4; i++)
+            {
+                block_coords[i] = Vector2{pivot_point.x + rotates[i].x + kick.x, pivot_point.y + rotates[i].y + kick.y};
+                playfield.SetCell(CellState::M, block_coords[i]);
+            }
             return;
         }
-    }
-    playfield.ClearMoving();
-    for (int i = 0; i < 4; i++)
-    {
-        Vector2 rotated = rotates[i];
-        block_coords[i] = Vector2{pivot_point.x + rotated.x, pivot_point.y + rotated.y};
-        playfield.SetCell(CellState::M, block_coords[i]);
     }
 }
 

@@ -34,7 +34,8 @@ public:
     CellState GetCell(Vector2 pos);
     void ClearMoving();
     //~Playfield();
-
+    bool game_over = false;
+    
 private:
     int cell_size;
     Vector2 starting_coords = {40, 10};

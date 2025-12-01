@@ -9,6 +9,7 @@
                 "-std=c++17",
                 "-I/opt/homebrew/opt/raylib/include",
                 "src/main.cpp",
+                "src/game_manager.cpp",
                 "src/playfield.cpp",
                 "src/piece.cpp",
                 "src/queue_manager.cpp",
