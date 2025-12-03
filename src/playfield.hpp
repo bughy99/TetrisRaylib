@@ -33,7 +33,7 @@ public:
     void SetCell(CellState state, Vector2 pos);
     CellState GetCell(Vector2 pos);
     void ClearMoving();
-    //~Playfield();
+    ~Playfield();
     bool game_over = false;
     
 private:

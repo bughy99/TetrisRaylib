@@ -29,7 +29,6 @@ std::queue<PieceType> QueueManager::GeneratePieceQueue()
 
 void QueueManager::PopPiece()
 {
-    delete curr_piece;
     piece_queue.pop();
     if (next_piece_queue.size() == 0)
     {
@@ -39,7 +38,8 @@ void QueueManager::PopPiece()
     piece_queue.push(next_piece_queue.front());
     next_piece_queue.pop();
 
-    SpawnPiece(piece_queue.front());
+    SpawnPiece(piece_queue.front(), curr_piece);
+    has_switched = false;
 }
 
 void QueueManager::Update()
@@ -116,6 +116,11 @@ void QueueManager::Update()
             curr_piece->Rotate(playfield, {-1, 1});
         }
 
+        if (IsKeyPressed(KEY_C))
+        {
+            HoldPiece();
+        }
+
         //go down instantly
         if (IsKeyPressed(KEY_SPACE))
         {
@@ -180,32 +185,99 @@ void QueueManager::DrawQueue()
     }
 }
 
-void QueueManager::SpawnPiece(PieceType p_type)
+void QueueManager::DrawHold()
 {
+    Color col = T_GRAY;
+    Vector2 pos = {50.0, 550.0};
+    DrawRectangleV(pos,{80.0, 80.0}, col);
+    DrawText("HOLD:", 50, 530, 20, BLACK);
+    char letter;
+    if (dynamic_cast<Piece_I*>(hold_piece))
+    {
+        letter = 'I';
+    }
+    else if (dynamic_cast<Piece_J*>(hold_piece))
+    {
+        letter = 'J';
+    }
+    else if (dynamic_cast<Piece_L*>(hold_piece))
+    {
+        letter = 'L';
+    }
+    else if (dynamic_cast<Piece_O*>(hold_piece))
+    {
+        letter = 'O';
+    }
+    else if (dynamic_cast<Piece_S*>(hold_piece))
+    {
+        letter = 'S';
+    }
+    else if (dynamic_cast<Piece_T*>(hold_piece))
+    {
+        letter = 'T';
+    }
+    else if (dynamic_cast<Piece_Z*>(hold_piece))
+    {
+        letter = 'Z';
+    }
+    DrawText(std::string(1, letter).c_str(), 50, 550, 20, BLACK);
+}
+
+void QueueManager::SpawnPiece(PieceType p_type,  Piece*& piece_ptr)
+{
+    delete piece_ptr;
     switch (p_type)
     {
     case PieceType::I_PC:
-        curr_piece = new Piece_I();
+        piece_ptr = new Piece_I();
         break;
     case PieceType::J_PC:
-        curr_piece = new Piece_J();
+        piece_ptr = new Piece_J();
         break;
     case PieceType::L_PC:
-        curr_piece = new Piece_L();
+        piece_ptr = new Piece_L();
         break;
     case PieceType::O_PC:
-        curr_piece = new Piece_O();
+        piece_ptr = new Piece_O();
         break;
     case PieceType::S_PC:
-        curr_piece = new Piece_S();
+        piece_ptr = new Piece_S();
         break;
     case PieceType::T_PC:
-        curr_piece = new Piece_T();
+        piece_ptr = new Piece_T();
         break;
     case PieceType::Z_PC:
-        curr_piece = new Piece_Z();
+        piece_ptr = new Piece_Z();
         break;
     }
+}
+
+void QueueManager::HoldPiece()
+{
+    if (!has_switched){
+        std::deque<PieceType> temp_queue(piece_queue.__get_container());
+        if (hold_piece == nullptr)
+        {
+            SpawnPiece(temp_queue[0], hold_piece);
+            hold_pc_type = temp_queue[0];
+            SpawnPiece(temp_queue[1], curr_piece);
+            has_switched = true;
+        }
+        else
+        {
+            SpawnPiece(temp_queue[0], hold_piece);
+            SpawnPiece(hold_pc_type, curr_piece);
+            hold_pc_type = temp_queue[0];
+
+            has_switched = true;
+        }
+    }
+}
+
+QueueManager::~QueueManager()
+{
+    playfield.~Playfield();
+    curr_piece->~Piece();
 }
 
 PieceType QueueManager::PickPiece()

@@ -99,3 +99,7 @@ void Playfield::ClearMoving()
         }
     }
 }
+
+Playfield::~Playfield()
+{
+}
