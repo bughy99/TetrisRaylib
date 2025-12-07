@@ -18,7 +18,8 @@ enum PieceType
     O_PC,
     S_PC,
     T_PC,
-    Z_PC
+    Z_PC,
+    NULL_PC
 };
 
 // queue size is 5
@@ -43,8 +44,7 @@ public:
 
 private:
     Piece *curr_piece = nullptr;
-    Piece *hold_piece = nullptr;
-    PieceType hold_pc_type;
+    PieceType hold_pc_type = PieceType::NULL_PC;
 
     bool has_switched = false;
 

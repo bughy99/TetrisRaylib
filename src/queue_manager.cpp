@@ -192,33 +192,32 @@ void QueueManager::DrawHold()
     DrawRectangleV(pos,{80.0, 80.0}, col);
     DrawText("HOLD:", 50, 530, 20, BLACK);
     char letter;
-    if (dynamic_cast<Piece_I*>(hold_piece))
+    switch (hold_pc_type)
     {
-        letter = 'I';
-    }
-    else if (dynamic_cast<Piece_J*>(hold_piece))
-    {
-        letter = 'J';
-    }
-    else if (dynamic_cast<Piece_L*>(hold_piece))
-    {
-        letter = 'L';
-    }
-    else if (dynamic_cast<Piece_O*>(hold_piece))
-    {
-        letter = 'O';
-    }
-    else if (dynamic_cast<Piece_S*>(hold_piece))
-    {
-        letter = 'S';
-    }
-    else if (dynamic_cast<Piece_T*>(hold_piece))
-    {
-        letter = 'T';
-    }
-    else if (dynamic_cast<Piece_Z*>(hold_piece))
-    {
-        letter = 'Z';
+        case PieceType::I_PC:
+            letter = 'I';
+            break;
+        case PieceType::J_PC:
+            letter = 'J';
+            break;
+        case PieceType::L_PC:
+            letter = 'L';
+            break;
+        case PieceType::O_PC:
+            letter = 'O';
+            break;
+        case PieceType::S_PC:
+            letter = 'S';
+            break;
+        case PieceType::Z_PC:
+            letter = 'Z';
+            break;
+        case PieceType::T_PC:
+            letter = 'T';
+            break;
+        case PieceType::NULL_PC:
+            letter = '?';
+            break;
     }
     DrawText(std::string(1, letter).c_str(), 50, 550, 20, BLACK);
 }
@@ -256,16 +255,14 @@ void QueueManager::HoldPiece()
 {
     if (!has_switched){
         std::deque<PieceType> temp_queue(piece_queue.__get_container());
-        if (hold_piece == nullptr)
+        if (hold_pc_type == PieceType::NULL_PC)
         {
-            SpawnPiece(temp_queue[0], hold_piece);
             hold_pc_type = temp_queue[0];
             SpawnPiece(temp_queue[1], curr_piece);
             has_switched = true;
         }
         else
         {
-            SpawnPiece(temp_queue[0], hold_piece);
             SpawnPiece(hold_pc_type, curr_piece);
             hold_pc_type = temp_queue[0];
 

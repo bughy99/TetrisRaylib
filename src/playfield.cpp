@@ -2,6 +2,8 @@
 #include <iostream>
 #include "includes.hpp"
 
+int score = 0;
+
 void Playfield::CheckLines()
 {
 
@@ -28,7 +30,7 @@ void Playfield::CheckLines()
         if (is_full)
         {
             ClearLine(j);
-            std::cout << "line " << j << " cleared";
+            score += 40;
         }
     }
 }
@@ -102,4 +104,6 @@ void Playfield::ClearMoving()
 
 Playfield::~Playfield()
 {
+    score = 0;
 }
+

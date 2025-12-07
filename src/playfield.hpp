@@ -6,6 +6,8 @@
 const int cell_width = 10;
 const int cell_height = 21;
 
+extern int score;
+
 enum CellState
 {
     E, // Empty
@@ -35,6 +37,7 @@ public:
     void ClearMoving();
     ~Playfield();
     bool game_over = false;
+
     
 private:
     int cell_size;
